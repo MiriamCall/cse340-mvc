@@ -1,0 +1,16 @@
+<footer class="footer-container">
+  <p>&copy; <%= new Date().getFullYear() %> My Website</p>
+
+  <% if (devModeWarning) { %>
+  <p style="color: red; font-weight: bold"><%= devModeWarning %></p>
+  <% } %> <% if (isDevMode) { %>
+  <script>
+    const ws = new WebSocket("ws://localhost:35729");
+    ws.onmessage = (event) => {
+      if (event.data === "reload") {
+        location.reload();
+      }
+    };
+  </script>
+  <% } %>
+</footer>

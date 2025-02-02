@@ -1,0 +1,63 @@
+/* navbar styles*/
+.nav {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-list {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  padding: 1rem 0;
+  margin: 0;
+}
+
+.nav-item {
+  background-color: rgb(3, 3, 195);
+  padding: 0.5rem;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: white;
+}
+
+/* index page styles */
+.index-title {
+  text-align: center;
+}
+
+.index-description {
+  text-align: center;
+}
+
+/* About Page Styles */
+.about-section {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.about-h1 {
+  text-align: center;
+}
+
+.about-bio {
+  text-align: center;
+  font-size: large;
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* footer styles */
+.footer-container {
+  text-align: center;
+}

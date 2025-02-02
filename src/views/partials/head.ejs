@@ -1,0 +1,14 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title><%= title %></title>
+<link rel="stylesheet" href="/css/main.css" />
+
+<!-- Dynamically injected styles-->
+<% if (styles && styles.length) { %> <% styles.forEach(style => { %>
+<link rel="stylesheet" href="<%= style %>" />
+<% }) %> <% } %>
+
+<!-- Dynamically Injected Scripts -->
+<% if (scripts && scripts.length) { %> <% scripts.forEach(script => { %>
+<script src="<%= script %>" defer></script>
+<% }) %> <% } %>
