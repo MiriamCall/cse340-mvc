@@ -65,7 +65,7 @@ body {
 }
 
 /* Main */
-main {
+.global-main {
   padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -115,34 +115,10 @@ main {
 }
 
 /* Footer Styles */
-.footer-container {
+.global-footer {
   text-align: center;
   background-color: var(--primary-color);
   color: var(--white);
   padding: 1rem 0;
   margin-top: 2rem;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 600px) {
-  .nav-list {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .about-bio {
-    width: 90%;
-    padding: 0 1rem;
-  }
-}
-
-/* A/B Testing Styles */
-.variant-a {
-  border-left: 5px solid green;
-  padding-left: 15px;
-}
-
-.variant-b {
-  border-left: 5px solid blue;
-  padding-left: 15px;
 }
