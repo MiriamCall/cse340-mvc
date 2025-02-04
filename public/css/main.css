@@ -1,7 +1,39 @@
-/* navbar styles*/
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* Root variables for consistent theming */
+:root {
+  --primary-color: rgb(109, 109, 109);
+  --text-color: #333;
+  --background-color: #f4f4f4;
+  --white: #ffffff;
+  --dev-bg: #ffecb3;
+  --dev-text: #333;
+}
+
+/* Global Styles */
+body {
+  font-family: "Roboto", sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Development Mode Message */
+.dev-mode-msg {
+  color: rgb(228, 52, 52);
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+
+/* Navbar Styles */
 .nav {
   display: flex;
   justify-content: center;
+  background-color: var(--primary-color);
+  padding: 1rem 0;
 }
 
 .nav-list {
@@ -9,27 +41,47 @@
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  padding: 1rem 0;
+  padding: 0;
   margin: 0;
 }
 
 .nav-item {
-  background-color: rgb(3, 3, 195);
-  padding: 0.5rem;
+  background-color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  border: 1px solid var(--white);
+}
+
+.nav-item:hover {
+  border: 1px solid rgb(143, 127, 127);
 }
 
 .nav-link {
   text-decoration: none;
-  color: white;
+  color: var(--white);
+  font-weight: 500;
+  font-size: 1.5rem;
 }
 
-/* index page styles */
+/* Main */
+main {
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 70vh;
+}
+
+/* Index Page Styles */
 .index-title {
   text-align: center;
+  color: var(--primary-color);
 }
 
 .index-description {
   text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 /* About Page Styles */
@@ -37,27 +89,60 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  align-items: center;
 }
 
 .about-h1 {
   text-align: center;
+  color: var(--primary-color);
 }
 
 .about-bio {
   text-align: center;
   font-size: large;
-  width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 600px;
+  margin: 1rem auto;
+  line-height: 1.7;
 }
 
 .about-img {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 300px;
+  height: auto;
+  border-radius: 50%;
+  margin: 1rem auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* footer styles */
+/* Footer Styles */
 .footer-container {
   text-align: center;
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 1rem 0;
+  margin-top: 2rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+  .nav-list {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .about-bio {
+    width: 90%;
+    padding: 0 1rem;
+  }
+}
+
+/* A/B Testing Styles */
+.variant-a {
+  border-left: 5px solid green;
+  padding-left: 15px;
+}
+
+.variant-b {
+  border-left: 5px solid blue;
+  padding-left: 15px;
 }

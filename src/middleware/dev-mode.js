@@ -1,9 +1,14 @@
 export default function devMode(req, res, next) {
-  res.locals.isDevMode = process.env.NODE_ENV === "development";
+  // Determine if we're in development mode
+  const isDevMode = process.env.NODE_ENV === "development";
 
-  res.locals.devModeWarning = res.locals.isDevMode;
-  if (res.locals.isDevMode) {
-    console.log("Warning: Development mode is enabled");
+  // Set both isDevMode and devModeWarning
+  res.locals.isDevMode = isDevMode;
+  res.locals.devModeWarning = isDevMode;
+
+  if (isDevMode) {
+    res.locals.devModeMessage = "Warning: Development Mode Enabled";
   }
+
   next();
 }
