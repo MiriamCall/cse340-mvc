@@ -9,6 +9,7 @@
 <% }) %> <% } %>
 
 <!-- Dynamically Injected Scripts -->
-<% if (scripts && scripts.length) { %> <% scripts.forEach(script => { %>
+<% if (scripts && scripts.length) { %> <% scripts.forEach(script => { %> <% if
+(script.includes('<script')) { %> <%- script %> <% } else { %>
 <script src="<%= script %>" defer></script>
-<% }) %> <% } %>
+<% } %> <% }) %> <% } %>
