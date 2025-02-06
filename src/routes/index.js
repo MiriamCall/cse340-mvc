@@ -1,18 +1,18 @@
 import { Router } from "express";
+import { getNav } from "../utils/index.js";
 
 const router = Router();
 
 // The home page route
-router.get("/", (req, res) => {
-  res.locals.addStyles("css/home.css");
-  res.locals.addScripts("js/home.js");
-  res.render("index", { title: "Home Page" });
+router.get("/", async (req, res) => {
+  const nav = await getNav();
+  res.render("index", { title: "Home Page", nav });
 });
 
-// The about page route
-router.get("/about", (req, res) => {
-  res.locals.addStyles("css/about.css");
-  res.render("about", { title: "About Page" });
+// About page route
+router.get("/about", async (req, res) => {
+  const nav = await getNav();
+  res.render("about", { title: "About Page", nav });
 });
 
 export default router;

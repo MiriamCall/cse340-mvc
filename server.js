@@ -36,7 +36,7 @@ app.use(devModeMiddleware);
 app.use(configMode);
 
 // Serve static files
-app.use(staticPaths);
+// app.use(staticPaths);
 app.use("/css", express.static(path.join(__dirname, "public/css")));
 app.use("/js", express.static(path.join(__dirname, "public/js")));
 app.use("/images", express.static(path.join(__dirname, "public/images")));
