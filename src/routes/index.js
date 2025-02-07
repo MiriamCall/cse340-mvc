@@ -6,6 +6,7 @@ const router = Router();
 // The home page route
 router.get("/", async (req, res) => {
   const nav = await getNav();
+  console.log(nav);
   res.render("index", { title: "Home Page", nav });
 });
 

@@ -21,7 +21,7 @@ export default function configMode(req, res, next) {
     const port = process.env.PORT || 3000; // Ensure port is correctly set
     res.locals.scripts.push(`
           <script>
-              const ws = new WebSocket('ws://127.0.0.1:${parseInt(port) + 1}');
+              const ws = new WebSocket('ws://127.0.0.1:${parseInt(port) + 2}');
               ws.onclose = () => {
                   setTimeout(() => location.reload(), 5000);
               };

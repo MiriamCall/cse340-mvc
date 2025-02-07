@@ -11,7 +11,7 @@ dotenv.config();
 import devModeMiddleware from "./src/middleware/dev-mode.js";
 import configMode from "./src/middleware/config-mode.js";
 import layouts from "./src/middleware/layout.js";
-import staticPaths from "./src/middleware/static-paths.js";
+// import staticPaths from "./src/middleware/static-paths.js";
 import {
   notFoundHandler,
   globalErrorHandler,
@@ -62,7 +62,7 @@ if (isDevMode) {
   const { WebSocketServer } = await import("ws");
 
   try {
-    const wsPort = PORT + 1;
+    const wsPort = PORT + 2;
     const wsServer = new WebSocketServer({ port: wsPort });
 
     wsServer.on("listening", () => {
