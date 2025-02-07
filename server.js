@@ -62,7 +62,7 @@ if (isDevMode) {
   const { WebSocketServer } = await import("ws");
 
   try {
-    const wsPort = PORT + 2;
+    const wsPort = PORT + 1;
     const wsServer = new WebSocketServer({ port: wsPort });
 
     wsServer.on("listening", () => {
