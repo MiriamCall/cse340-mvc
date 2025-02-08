@@ -1,10 +1,17 @@
-import dbPromise from "../database/index.js";
+import dbPromise from "../../public/images/games/index.js";
 
-const getNavigationLinks = async () => {
+const getClassifications = async () => {
   const db = await dbPromise;
-  const links = await db.all("SELECT * FROM navigation");
-  console.log(links);
-  return links;
+  return await db.all("SELECT * FROM classification");
 };
 
-export { getNavigationLinks };
+// Omitted code...
+
+const getGamesByClassification = async (classificationId) => {
+  const db = await dbPromise;
+  return await db.all("SELECT * FROM game WHERE classification_id = ?", [
+    classificationId,
+  ]);
+};
+
+export { getClassifications, getGamesByClassification };

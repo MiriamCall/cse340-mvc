@@ -3,6 +3,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import categoryRoute from "./src/routes/category/index.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -40,6 +41,9 @@ app.use(configMode);
 app.use("/css", express.static(path.join(__dirname, "public/css")));
 app.use("/js", express.static(path.join(__dirname, "public/js")));
 app.use("/images", express.static(path.join(__dirname, "public/images")));
+
+// Handle all request for a category of games
+app.use("/category", categoryRoute);
 
 // Set EJS as the view engine and configure views
 app.set("view engine", "ejs");

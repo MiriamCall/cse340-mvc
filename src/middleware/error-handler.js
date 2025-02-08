@@ -52,7 +52,6 @@ export const notFoundHandler = (req, res, next) => {
  * @param {Function} next - The next middleware function in the stack.
  */
 export const globalErrorHandler = (err, req, res, next) => {
-  res.locals.nav = "";
   // Ensure we are in an error state
   if (!res.locals.isInErrorState) {
     res.locals.isInErrorState = true;
