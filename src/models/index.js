@@ -5,13 +5,16 @@ const getClassifications = async () => {
   return await db.all("SELECT * FROM classification");
 };
 
-// Omitted code...
-
 const getGamesByClassification = async (classificationId) => {
   const db = await dbPromise;
-  return await db.all("SELECT * FROM game WHERE classification_id = ?", [
-    classificationId,
-  ]);
+  return await db.all(
+    `
+      SELECT game.*, classification.classification_name 
+      FROM game 
+      JOIN classification ON game.classification_id = classification.classification_id
+      WHERE game.classification_id = ?`,
+    [classificationId]
+  );
 };
 
 export { getClassifications, getGamesByClassification };

@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import categoryRoute from "./src/routes/category/index.js";
+import { setupDatabase } from "./src/database/index.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -88,6 +89,15 @@ if (isDevMode) {
     console.error("Failed to start WebSocket server:", error);
   }
 }
+
+// run setup function on startup
+app.listen(PORT, async () => {
+  //  <-- Notice we had to make the callback async
+  // Ensure the database is setup
+  await setupDatabase(); //  <-- Run the setup function
+
+  console.log(`Server running on http://127.0.0.1:${PORT}`);
+});
 
 // Start the server
 app.listen(PORT, () => {
