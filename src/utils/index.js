@@ -6,9 +6,13 @@ const getNav = async () => {
   classifications.forEach((row) => {
     const id = row.classification_id;
     const name = row.classification_name;
-    nav += `<li class='nav-item nav-item:hover'><a href="/category/${id}" class='nav-link'>${name}</a></li>`;
+    nav += `<li><a href="/category/view/${id}">${name}</a></li>`;
   });
-  return `${nav}<li class='nav-item nav-item:hover'><a href="/About" class='nav-link'>About</a></li></ul></nav>`;
+  return `
+    ${nav}
+    <li><a href="/category/add">Add Game</a></li>
+    <li><a href="/about">About</a></li>
+    </ul></nav>`;
 };
 
 export { getNav };

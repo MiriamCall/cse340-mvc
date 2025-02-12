@@ -5,7 +5,6 @@ const router = Router();
 
 // The home page route
 router.get("/", async (req, res) => {
-  console.log(nav);
   res.render("index", { title: "Home Page" });
 });
 
@@ -15,7 +14,7 @@ router.get("/about", async (req, res) => {
 });
 
 // Game category route
-router.get("/:id", async (req, res, next) => {
+router.get("/view/:id", async (req, res, next) => {
   //  <-- Notice we added the next parameter
   const games = await getGamesByClassification(req.params.id);
   const title = `${games[0]?.classification_name || ""} Games`.trim();

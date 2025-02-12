@@ -29,6 +29,12 @@ const __dirname = path.dirname(__filename);
 // Create an instance of an Express application
 const app = express();
 
+// Middleware to parse JSON data in request body
+app.use(express.json());
+
+// Middleware to parse URL-encoded form data (like from a standard HTML form)
+app.use(express.urlencoded({ extended: true }));
+
 // Determine environment mode
 const isDevMode = process.env.NODE_ENV === "development";
 const PORT = process.env.PORT || 3000;
@@ -43,9 +49,6 @@ app.use("/css", express.static(path.join(__dirname, "public/css")));
 app.use("/js", express.static(path.join(__dirname, "public/js")));
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
-// Handle all request for a category of games
-app.use("/category", categoryRoute);
-
 // Set EJS as the view engine and configure views
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src/views"));
@@ -57,6 +60,9 @@ app.use(layouts);
 
 // Use Routes
 app.use("/", baseRoute);
+
+// Handle all request for a category of games
+app.use("/category", categoryRoute);
 
 // Apply error handlers
 app.use(notFoundHandler);

@@ -29,7 +29,7 @@ body {
 }
 
 /* Navbar Styles */
-.nav {
+nav {
   display: flex;
   justify-content: center;
   background-color: var(--primary-color);
