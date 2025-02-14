@@ -9,6 +9,9 @@ import { setupDatabase } from "./src/database/index.js";
 // Load environment variables from .env file
 dotenv.config();
 
+//load the file upload middleware
+import fileUploads from "./src/middleware/file-upload.js";
+
 // Import Middleware
 import devModeMiddleware from "./src/middleware/dev-mode.js";
 import configMode from "./src/middleware/config-mode.js";
@@ -38,6 +41,9 @@ app.use(express.urlencoded({ extended: true }));
 // Determine environment mode
 const isDevMode = process.env.NODE_ENV === "development";
 const PORT = process.env.PORT || 3000;
+
+// Use Middleware
+app.use(fileUploads);
 
 // Use Middleware
 app.use(devModeMiddleware);

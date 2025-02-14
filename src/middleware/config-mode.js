@@ -30,7 +30,7 @@ export default async function configMode(req, res, next) {
         <script>
             const ws = new WebSocket('ws://127.0.0.1:${parseInt(port) + 1}');
             ws.onclose = () => {
-                setTimeout(() => location.reload(), 5000);
+                setTimeout(() => location.reload(), 15000);
             };
         </script>
       `);

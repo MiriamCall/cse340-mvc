@@ -4,6 +4,7 @@
     <img src="<%= game.image_path %>" alt="<%= game.game_name %>" />
     <h3><%= game.game_name %></h3>
     <p><%= game.game_description %></p>
+    <a href="/category/edit/<%= game.game_id %>">Edit</a>
   </div>
   <% }); %>
 </div>
