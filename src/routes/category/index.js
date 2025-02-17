@@ -2,7 +2,13 @@ import { Router } from "express";
 import {
   getGamesByClassification,
   getClassifications,
+  getGameById,
+  updateGame,
 } from "../../models/index.js";
+import dbPromise from "../../database/index.js";
+console.log("dbPromise", dbPromise);
+import path from "path";
+import fs from "fs";
 
 const router = Router();
 
@@ -41,17 +47,20 @@ router.get("/add", async (req, res) => {
 // Add route to accept new game information
 router.post("/add", async (req, res) => {
   const { game_name, game_description, classification_id } = req.body;
+  console.log("req.files?.image: ", req.files?.image);
   const image_path = getVerifiedGameImage(req.files?.image);
+  console.log("image_path: ", image_path);
   await addNewGame(game_name, game_description, classification_id, image_path);
   res.redirect(`/category/view/${classification_id}`);
 });
 
-const addNewGame = async (
-  name,
-  description,
-  classification_id,
-  image_path = ""
-) => {
+const addNewGame = async (name, description, classification_id, image_path) => {
+  // console.log(
+  //   "name: " + name,
+  //   "description: " + description,
+  //   "classification id: " + classification_id,
+  //   "image_path: " + image_path
+  // );
   const db = await dbPromise;
   const sql = `
       INSERT INTO game (game_name, game_description, classification_id, image_path)
@@ -60,44 +69,82 @@ const addNewGame = async (
   return await db.run(sql, [name, description, classification_id, image_path]);
 };
 
-// Edit game route
 router.get("/edit/:id", async (req, res) => {
-  const classifications = await getClassifications();
-  const game = await getGameById(req.params.id);
-  res.render("category/edit", { title: "Edit Game", classifications, game });
+  console.log("req.params.id:", req.params.id); // Log the original value
+
+  try {
+    // Add try...catch for error handling
+    const gameIdString = req.params.id;
+    const gameId = parseInt(gameIdString, 10);
+
+    if (isNaN(gameId)) {
+      console.error("Invalid gameId:", gameIdString);
+      return res.status(400).send("Invalid Game ID");
+    }
+
+    const classifications = await getClassifications();
+    const game = await getGameById(gameId);
+
+    if (!game) {
+      console.log("Game not found for ID:", gameId);
+      return res.status(404).send("Game not found");
+    }
+
+    res.render("category/edit", { title: "Edit Game", classifications, game });
+  } catch (error) {
+    console.error("Error in edit route:", error);
+    res.status(500).send("Internal Server Error"); // Or render an error view
+  }
 });
 
 // Edit route to accept updated game information
 router.post("/edit/:id", async (req, res) => {
-  // Get existing game data to handle image replacement
-  const oldGameData = await getGameById(req.params.id);
+  console.log("req.params.id:", req.params.id); // Log the original value
 
-  // Extract form data and process any uploaded image
-  const { game_name, game_description, classification_id } = req.body;
-  const image_path = getVerifiedGameImage(req.files?.image);
+  try {
+    // Add try...catch
+    const gameIdString = req.params.id;
+    const gameId = parseInt(gameIdString, 10);
 
-  // Update game details in database
-  await updateGame(
-    req.params.id,
-    game_name,
-    game_description,
-    classification_id,
-    image_path
-  );
-
-  // Clean up old image file if a new one was uploaded
-  if (image_path && image_path !== oldGameData.image_path) {
-    const oldImagePath = path.join(
-      process.cwd(),
-      `public${oldGameData.image_path}`
-    );
-    if (fs.existsSync(oldImagePath) && fs.lstatSync(oldImagePath).isFile()) {
-      fs.unlinkSync(oldImagePath);
+    if (isNaN(gameId)) {
+      console.error("Invalid gameId:", gameIdString);
+      return res.status(400).send("Invalid Game ID");
     }
-  }
 
-  // Return to game category view page
-  res.redirect(`/category/view/${classification_id}`);
+    const oldGameData = await getGameById(gameId); // Use gameId (integer)
+
+    if (!oldGameData) {
+      console.error("Old game data not found for ID:", gameId);
+      return res.status(404).send("Old game data not found");
+    }
+
+    const { game_name, game_description, classification_id } = req.body;
+    const image_path = getVerifiedGameImage(req.files?.image);
+
+    await updateGame(
+      gameId, // Use gameId (integer)
+      game_name,
+      game_description,
+      classification_id,
+      image_path
+    );
+
+    if (image_path && oldGameData && image_path !== oldGameData.image_path) {
+      // Check if oldGameData exists
+      const oldImagePath = path.join(
+        process.cwd(),
+        `public${oldGameData.image_path}`
+      );
+      if (fs.existsSync(oldImagePath) && fs.lstatSync(oldImagePath).isFile()) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    res.redirect(`/category/view/${classification_id}`);
+  } catch (error) {
+    console.error("Error in post edit route:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // Helper function to verify and move uploaded game image

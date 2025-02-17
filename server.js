@@ -43,9 +43,6 @@ const isDevMode = process.env.NODE_ENV === "development";
 const PORT = process.env.PORT || 3000;
 
 // Use Middleware
-app.use(fileUploads);
-
-// Use Middleware
 app.use(devModeMiddleware);
 app.use(configMode);
 
@@ -66,6 +63,9 @@ app.use(layouts);
 
 // Use Routes
 app.use("/", baseRoute);
+
+// Use Middleware
+app.use(fileUploads);
 
 // Handle all request for a category of games
 app.use("/category", categoryRoute);

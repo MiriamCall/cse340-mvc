@@ -1,4 +1,4 @@
-import dbPromise from "../../public/images/games/index.js";
+import dbPromise from "../database/index.js";
 
 const getClassifications = async () => {
   const db = await dbPromise;
@@ -25,7 +25,13 @@ const getGameById = async (gameId) => {
       JOIN classification ON game.classification_id = classification.classification_id
       WHERE game.game_id = ?;
   `;
-  return await db.get(query, [gameId]);
+  console.log("query: ", query);
+
+  const game = await db.get(query, [gameId]); // Get the game ONCE and store it in a variable
+
+  console.log(game); // Log the retrieved game object
+
+  return game; // Return the stored game object
 };
 
 async function updateGame(
