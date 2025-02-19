@@ -1,16 +1,18 @@
-import { getClassifications } from "../models/index.js";
+import { getCategories } from "../models/category/index.js";
 
 const getNav = async () => {
-  const classifications = await getClassifications();
+  const categories = await getCategories();
   let nav = "<nav class='nav'><ul class='nav-list'>";
-  classifications.forEach((row) => {
-    const id = row.classification_id;
-    const name = row.classification_name;
+  categories.forEach((row) => {
+    const id = row.category_id;
+    const name = row.category_name;
     nav += `<li><a href="/category/view/${id}">${name}</a></li>`;
   });
   return `
     ${nav}
     <li><a href="/category/add">Add Game</a></li>
+    <li><a href="/category/add">Add Category</a></li>
+    <li><a href="/category/delete">Delete Category</a></li>
     <li><a href="/about">About</a></li>
     </ul></nav>`;
 };

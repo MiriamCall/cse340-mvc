@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import categoryRoute from "./src/routes/category/index.js";
+import gameRoute from "./src/routes/game/index.js";
 import { setupDatabase } from "./src/database/index.js";
 
 // Load environment variables from .env file
@@ -66,6 +67,9 @@ app.use("/", baseRoute);
 
 // Use Middleware
 app.use(fileUploads);
+
+//game routes
+app.use("/game", gameRoute);
 
 // Handle all request for a category of games
 app.use("/category", categoryRoute);

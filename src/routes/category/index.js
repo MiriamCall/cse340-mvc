@@ -1,22 +1,73 @@
 import { Router } from "express";
 import {
-  getGamesByClassification,
-  getClassifications,
-  getGameById,
-  updateGame,
-} from "../../models/index.js";
-import dbPromise from "../../database/index.js";
-console.log("dbPromise", dbPromise);
-import path from "path";
-import fs from "fs";
+  addCategory,
+  deleteCategory,
+  getCategories,
+} from "../../models/category/index.js";
+import {
+  getGamesByCategory,
+  moveGamesToCategory,
+} from "../../models/game/index.js";
 
 const router = Router();
 
-// Game category route
+// Add a new category route (view)
+router.get("/add", async (req, res) => {
+  res.render("category/add", { title: "Add Category" });
+});
+
+// Add a new category route (form submission)
+router.post("/add", async (req, res) => {
+  // If the category is missing, redirect back to the form
+  const category = req.body.name;
+  if (!category) {
+    res.redirect("/category/add");
+    return;
+  }
+
+  const result = await addCategory(category);
+
+  // If the category was added successfully, redirect to the new category
+  if (result.changes === 1) {
+    res.redirect(`/category/${result.lastID}`);
+    return;
+  }
+
+  // If the category was not added successfully, redirect back to the form
+  res.redirect("/category/add");
+});
+
+// Delete a category route (view)
+router.get("/delete", async (req, res) => {
+  const categories = await getCategories();
+  res.render("category/delete", { title: "Delete Category", categories });
+});
+
+// Delete a category route (form submission)
+router.post("/delete/:id", async (req, res) => {
+  const category = req.params.id;
+  const newCategory = req.body.new_category_id;
+
+  // If the new category is missing or matches the existing, redirect back to the form
+  if (!newCategory || category === newCategory) {
+    res.redirect("/category/delete");
+    return;
+  }
+
+  // If a new category is selected, move the games to the new category
+  if (newCategory.toLowerCase() !== "delete") {
+    await moveGamesToCategory(category, newCategory);
+  }
+
+  // Delete the category
+  await deleteCategory(category);
+  res.redirect("/category/delete");
+});
+
+// View games by category route (view)
 router.get("/view/:id", async (req, res, next) => {
-  //  <-- Notice we added the next parameter
-  const games = await getGamesByClassification(req.params.id);
-  const title = `${games[0]?.classification_name || ""} Games`.trim();
+  const games = await getGamesByCategory(req.params.id);
+  const title = `${games[0]?.category_name || ""} Games`.trim();
 
   // If no games are found, throw a 404 error
   if (games.length <= 0) {
@@ -24,7 +75,7 @@ router.get("/view/:id", async (req, res, next) => {
     const error = new Error(title);
     error.title = title;
     error.status = 404;
-    next(error); //  <-- Pass the error to the global error handler
+    next(error);
     return;
   }
 
@@ -38,142 +89,4 @@ router.get("/view/:id", async (req, res, next) => {
   res.render("category/index", { title, games });
 });
 
-// Add game route
-router.get("/add", async (req, res) => {
-  const classifications = await getClassifications();
-  res.render("category/add", { title: "Add New Game", classifications });
-});
-
-// Add route to accept new game information
-router.post("/add", async (req, res) => {
-  const { game_name, game_description, classification_id } = req.body;
-  console.log("req.files?.image: ", req.files?.image);
-  const image_path = getVerifiedGameImage(req.files?.image);
-  console.log("image_path: ", image_path);
-  await addNewGame(game_name, game_description, classification_id, image_path);
-  res.redirect(`/category/view/${classification_id}`);
-});
-
-const addNewGame = async (name, description, classification_id, image_path) => {
-  // console.log(
-  //   "name: " + name,
-  //   "description: " + description,
-  //   "classification id: " + classification_id,
-  //   "image_path: " + image_path
-  // );
-  const db = await dbPromise;
-  const sql = `
-      INSERT INTO game (game_name, game_description, classification_id, image_path)
-      VALUES (?, ?, ?, ?)
-  `;
-  return await db.run(sql, [name, description, classification_id, image_path]);
-};
-
-router.get("/edit/:id", async (req, res) => {
-  console.log("req.params.id:", req.params.id); // Log the original value
-
-  try {
-    // Add try...catch for error handling
-    const gameIdString = req.params.id;
-    const gameId = parseInt(gameIdString, 10);
-
-    if (isNaN(gameId)) {
-      console.error("Invalid gameId:", gameIdString);
-      return res.status(400).send("Invalid Game ID");
-    }
-
-    const classifications = await getClassifications();
-    const game = await getGameById(gameId);
-
-    if (!game) {
-      console.log("Game not found for ID:", gameId);
-      return res.status(404).send("Game not found");
-    }
-
-    res.render("category/edit", { title: "Edit Game", classifications, game });
-  } catch (error) {
-    console.error("Error in edit route:", error);
-    res.status(500).send("Internal Server Error"); // Or render an error view
-  }
-});
-
-// Edit route to accept updated game information
-router.post("/edit/:id", async (req, res) => {
-  console.log("req.params.id:", req.params.id); // Log the original value
-
-  try {
-    // Add try...catch
-    const gameIdString = req.params.id;
-    const gameId = parseInt(gameIdString, 10);
-
-    if (isNaN(gameId)) {
-      console.error("Invalid gameId:", gameIdString);
-      return res.status(400).send("Invalid Game ID");
-    }
-
-    const oldGameData = await getGameById(gameId); // Use gameId (integer)
-
-    if (!oldGameData) {
-      console.error("Old game data not found for ID:", gameId);
-      return res.status(404).send("Old game data not found");
-    }
-
-    const { game_name, game_description, classification_id } = req.body;
-    const image_path = getVerifiedGameImage(req.files?.image);
-
-    await updateGame(
-      gameId, // Use gameId (integer)
-      game_name,
-      game_description,
-      classification_id,
-      image_path
-    );
-
-    if (image_path && oldGameData && image_path !== oldGameData.image_path) {
-      // Check if oldGameData exists
-      const oldImagePath = path.join(
-        process.cwd(),
-        `public${oldGameData.image_path}`
-      );
-      if (fs.existsSync(oldImagePath) && fs.lstatSync(oldImagePath).isFile()) {
-        fs.unlinkSync(oldImagePath);
-      }
-    }
-
-    res.redirect(`/category/view/${classification_id}`);
-  } catch (error) {
-    console.error("Error in post edit route:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-// Helper function to verify and move uploaded game image
-const getVerifiedGameImage = (images = []) => {
-  // Exit early if no valid images array provided
-  if (!images || images.length === 0) {
-    return "";
-  }
-
-  // Process first image (assuming single image upload)
-  const image = images[0];
-  const imagePath = path.join(
-    process.cwd(),
-    `public/images/games/${image.newFilename}`
-  );
-
-  // Move uploaded file from temp location to permanent storage
-  fs.renameSync(image.filepath, imagePath);
-
-  // Cleanup by removing any remaining temporary files
-  images.forEach((image) => {
-    if (fs.existsSync(image.filepath)) {
-      fs.unlinkSync(image.filepath);
-    }
-  });
-
-  // Return the new frontend image path for storage in the database
-  return `/images/games/${image.newFilename}`;
-};
-
 export default router;
-export { addNewGame };
