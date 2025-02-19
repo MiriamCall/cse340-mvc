@@ -13,9 +13,9 @@
     <label for="classification_id">Classification:</label>
     <select id="classification_id" name="classification_id" required>
       <option value="" disabled selected>Select Classification</option>
-      <% classifications.forEach((classification) => { %>
-      <option value="<%= classification.classification_id %>">
-        <%= classification.classification_name %>
+      <% categories.forEach((category) => { %>
+      <option value="<%= category.category_id %>">
+        <%= category.category_name %>
       </option>
       <% }); %>
     </select>

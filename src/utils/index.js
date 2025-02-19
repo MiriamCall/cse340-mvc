@@ -10,7 +10,7 @@ const getNav = async () => {
   });
   return `
     ${nav}
-    <li><a href="/category/add">Add Game</a></li>
+    <li><a href="/game/add">Add Game</a></li>
     <li><a href="/category/add">Add Category</a></li>
     <li><a href="/category/delete">Delete Category</a></li>
     <li><a href="/about">About</a></li>

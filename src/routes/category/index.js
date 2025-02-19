@@ -19,7 +19,7 @@ router.get("/add", async (req, res) => {
 // Add a new category route (form submission)
 router.post("/add", async (req, res) => {
   // If the category is missing, redirect back to the form
-  const category = req.body.name;
+  const category = req.body.category_name;
   if (!category) {
     res.redirect("/category/add");
     return;

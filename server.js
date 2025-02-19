@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import categoryRoute from "./src/routes/category/index.js";
 import gameRoute from "./src/routes/game/index.js";
 import { setupDatabase } from "./src/database/index.js";
+import configureStaticPaths from "./src/middleware/static-paths.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -47,11 +48,8 @@ const PORT = process.env.PORT || 3000;
 app.use(devModeMiddleware);
 app.use(configMode);
 
-// Serve static files
-// app.use(staticPaths);
-app.use("/css", express.static(path.join(__dirname, "public/css")));
-app.use("/js", express.static(path.join(__dirname, "public/js")));
-app.use("/images", express.static(path.join(__dirname, "public/images")));
+// Configure static paths for the Express application
+configureStaticPaths(app);
 
 // Set EJS as the view engine and configure views
 app.set("view engine", "ejs");

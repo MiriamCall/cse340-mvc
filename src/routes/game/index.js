@@ -7,6 +7,7 @@ import {
   moveGamesToCategory,
   updateGame,
 } from "../../models/game/index.js";
+import { getCategories } from "../../models/category/index.js";
 import dbPromise from "../../database/index.js";
 console.log("dbPromise", dbPromise);
 import path from "path";
@@ -42,8 +43,8 @@ router.get("/view/:id", async (req, res, next) => {
 
 // Add game route
 router.get("/add", async (req, res) => {
-  const classifications = await getCategories();
-  res.render("category/add", { title: "Add New Game", classifications });
+  const categories = await getCategories();
+  res.render("game/add", { title: "Add New Game", categories });
 });
 
 // Add route to accept new game information
